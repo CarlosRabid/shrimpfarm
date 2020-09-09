@@ -1,0 +1,72 @@
+{
+  "name": "shrimpfarm",
+  "version": "0.0.2",
+  "description": "shrimpfarmexample",
+  "main": "index.js",
+  "dependencies": {
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-scripts": "^3.4.3",
+    "@fortawesome/fontawesome-svg-core": "^1.2.25",
+    "@fortawesome/free-regular-svg-icons": "^5.11.2",
+    "@fortawesome/free-solid-svg-icons": "^5.11.2",
+    "@fortawesome/react-fontawesome": "^0.1.7",
+    "@material-ui/core": "^4.9.0",
+    "@material-ui/icons": "^4.5.1",
+    "@material-ui/lab": "^4.0.0-alpha.29",
+    "@material-ui/pickers": "^3.2.7",
+    "@material-ui/styles": "^4.5.0",
+    "@material/fab": "^3.2.0",
+    "@material/list": "^3.2.0",
+    "@material/menu": "^3.2.0",
+    "axios": "^0.19.0",
+    "body-parser": "^1.19.0",
+    "bootstrap": "^4.3.1",
+    "date-fns": "^2.0.0-beta.5",
+    "express": "^4.17.1",
+    "jquery": "^3.4.1",
+    "json-loader": "^0.5.7",
+    "material-components-web": "^3.2.0",
+    "material-ui": "^0.20.2",
+    "material-ui-icons": "^1.0.0-beta.36",
+    "moment": "^2.24.0",
+    "mongoose": "^5.7.4",
+    "react-bootstrap": "^1.0.0-beta.14",
+    "react-router-dom": "^5.1.2",
+    "react-search": "^2.1.1",
+    "reactjs-popup": "^1.5.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "start-sw": "http-server ./build"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CarlosRabid/shrimpfarm.git"
+  },
+  "author": "ccn",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CarlosRabid/shrimpfarm/issues"
+  },
+  "homepage": "http://localhost:3000"
+}
