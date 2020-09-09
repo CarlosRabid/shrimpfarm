@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
+
+.App {
+  /* text-align: center;*/
+  background-color: #FBAB7E;
+  background-image: linear-gradient(62deg, #FBAB7E 13%, #F7CE68 83%, #ffffff 100%);
+  font-family: 'Montserrat', sans-serif;
+  /* background-color: rgb(22, 87, 124);
+  background-image: url("../src/styles/background-turtle.jpeg"); */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed
+}
+
+.rbc-toolbar-label {
+  flex-grow: 1;
+  padding: 0 3px;
+  text-align: left;
+  font-size: 6vh;
+  margin-bottom: 16px;
+  margin-top: 0;
+  /* margin-left: 1%; */
+}
+
+.rbc-btn-group {
+  display: inline-block;
+  white-space: nowrap;
+  margin-left: 2vw;
+}
+
+.popup {  
+  position: fixed;  
+  width: 80vw;  
+  height: 50vh;  
+  top: 17%;  
+  left: 0;  
+  right: 0;  
+  bottom: 50%;
+  border-radius: 5px;
+  border: 1em;  
+  margin: auto;  
+  font-family: 'Montserrat', sans-serif;
+}  
+.popup\_inner {  
+  position: absolute;  
+  left: 0;  
+  right: 0;  
+  top: 0%;  
+  bottom: 25%;  
+  margin: auto;  
+  border-radius: 20px;  
+  font-family: 'Montserrat', sans-serif;
+}
+
+.App-logo {
+  height: 40vmin;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #09d3ac;
+}
+
+.farm {
+  background: #fff;
+  border-radius: 2px;
+  display: inline-block;
+  height: 300px;
+  margin: 1rem;
+  position: relative;
+  width: 300px;
+  /* padding: 20; */
+  /* flex-grow: 1; */
+}
+
+.farm-1 {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+  /* padding: 20; */
+  /* text-align: center; */
+}
+
+.farm-1:hover {
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+
