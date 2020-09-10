@@ -1,7 +1,12 @@
 import React, { Component } from "react";
 import Fab from "@material-ui/core/Fab";
 import { Button } from "@material-ui/core";
-import {BrowserRouter as Router,Route,Link,BrowserRouter,} from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  BrowserRouter,
+} from "react-router-dom";
 import "./App.css";
 import Popup from "./components/actions/Popup";
 import axios from "axios";
@@ -9,7 +14,6 @@ import Editable from "./components/actions/Editable";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import Boxmodels from "./components/actions/BoxModels";
-
 
 const style = {
   margin: "auto",
@@ -23,7 +27,8 @@ const style = {
 class App extends Component {
   constructor() {
     super();
-    this.state = { // Dummy data for testing first
+    this.state = {
+      // Dummy data for testing first
       totSize: 13,
       dbdata: [],
       data: [
@@ -75,9 +80,7 @@ class App extends Component {
         "Delete this Farm ? This will delete all ponds within same farm."
       )
     ) {
-      let data = await axios.delete(
-        `http://localhost:4328/delFarm/${_id}`
-      );
+      let data = await axios.delete(`http://localhost:4328/delFarm/${_id}`);
       alert("Farm Deleted!");
       return this.closeEdit();
     } else {
@@ -123,11 +126,16 @@ class App extends Component {
   };
 
   // create farm
-  pushData = async (name, ponds, indicator, size, parentFarm) => {
-    let data = {};
+  pushData = async (_id, name, ponds, indicator, size, parentFarm) => {
+    let newFarm = {};
+    let newPond = [];
+    let ponddetail = { name, size, parentFarm };
+    newPond.push(ponddetail);
+    newFarm = {_id, name: parentFarm, ponds:newPond};
+    console.log(newFarm);
     indicator === "Pond"
-      ? await axios.post("http://localhost:4328/updtFarm", {
-          data: { name, size, parentFarm },
+      ? await axios.put("http://localhost:4328/updtFarm", {
+          data: {_id, name, size, parentFarm, ponds, newFarm },
         })
       : await axios.post("http://localhost:4328/postFarm", {
           data: { name, ponds },
@@ -195,10 +203,13 @@ class App extends Component {
                   <Popup
                     closePopup={this.closePopup}
                     pushData={this.pushData}
-                    farms={this.state.data}
+                    farms={this.state.dbdata}
                   />
                 ) : (
-                  <Boxmodels data={this.state.data} totsize={this.state.size} />
+                  <Boxmodels
+                    data={this.state.dbdata}
+                    totsize={this.state.size}
+                  />
                 )}
                 <Fab
                   variant="extended"
@@ -213,7 +224,7 @@ class App extends Component {
                   <FontAwesomeIcon
                     icon={faPlus}
                     size="2x"
-                    id="allDay"
+                    id="all"
                     value="false"
                   />
                 </Fab>
