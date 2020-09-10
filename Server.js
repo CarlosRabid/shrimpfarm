@@ -81,20 +81,13 @@ app.post("/postFarm", async function (req, res) {
 // For Modifying farm
 app.put("/updtFarm", async (req, res) => {
   let farm = req.body.data;
-  let data = [];
-  app.get("/farms", async function (req, res) {
-    await farmincollection.find({ name: farm.name }, function (err, result) {
-      return (data = result);
-    });
-    data = result;
-  });
-
-  console.log("here pushed " + data);
-  await farmincollection.updateOne(
-    farm.parentFarm,
-    {
-      ponds: [data],
-    },
+  let nfarm = req.body.data.newFarm;
+  let _id = nfarm._id
+  console.log(nfarm._id);
+  
+  await farmincollection.findByIdAndUpdate(
+    _id,
+     nfarm,
     { new: true },
     (err, result) => {
       if (err) throw err;

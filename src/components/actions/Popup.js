@@ -5,8 +5,8 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import ToggleButton from "@material-ui/lab/ToggleButton";
 import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCropAlt, faObjectGroup } from "@fortawesome/free-solid-svg-icons";
+import CropLandscapeIcon from "@material-ui/icons/CropLandscape";
+import PictureInPictureIcon from "@material-ui/icons/PictureInPicture";
 import {
   FormControl,
   InputLabel,
@@ -15,13 +15,13 @@ import {
   Tooltip,
 } from "@material-ui/core";
 
-
 class Popup extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      _id: {},
       open: false,
-      farms: [this.props.farms],
+      farms: this.props.farms,
       indicator: "",
       parentFarm: "",
       name: "",
@@ -33,25 +33,11 @@ class Popup extends React.Component {
     this.props.closePopup();
   };
 
-  closeSelect = (event) => {
-    console.log(event.target.id);
-  };
-
-  openSelect = (event) => {
-    return this.setState(event.target.id);
-  };
-
-  handleInput = (event) => {
-    let value = { ...this.state.value };
-    value = event;
-    return this.setState(value);
-  };
-
   update = async (event) => {
     let type = event.target.name;
-    //   let parentFarm = event.target.name;
-    console.log(event.target);
+    // let parentFarm = event.target.name;
     let value = event.target.value;
+    let _id = event.target.id;
     if (value === "undefined") {
       return;
     } else {
@@ -61,22 +47,29 @@ class Popup extends React.Component {
     }
   };
 
-  pushData = async (name, ponds, indicator, size, parentFarm) => {
-    await this.props.pushData(name, ponds, indicator, size, parentFarm);
+  pushData = async (_id, name, ponds, indicator, size, parentFarm) => {
+    _id = parentFarm
+    parentFarm = this.state.undefined
+    let sfarms = [...this.state.farms]
+    let arrponds = []
+    sfarms.reduce((obj, idx)=> ((indicator ==="Pond" && parentFarm===idx.name)? arrponds.push(idx.ponds) : obj) , [])
+    // let nPonds = ponds.reduce((obj, item) => ( obj[item.key] = item.value, obj), {});
+    ponds = arrponds[0]
+    await this.props.pushData(_id, name, ponds, indicator, size, parentFarm);
     return;
   };
 
   indicatorSelector = async (event) => {
     console.log(event.target.id);
-    let indicator = { ...this.state.indicator };
-    if (event.target.id === "Farm") {
+    let indicator = event.target.id;
+    if ((await event.target.id) === "Farm") {
       indicator = "Farm";
       return this.setState({
         indicator: indicator,
       });
     } else {
       return this.setState({
-        indicator: indicator,
+        indicator: "Pond",
       });
     }
   };
@@ -88,11 +81,12 @@ class Popup extends React.Component {
       )
     ) {
       await this.pushData(
+        this.state._id,
         this.state.name,
         this.state.ponds,
+        this.state.indicator,
         this.state.size,
-        this.state.parentFarm,
-        this.state.indicator
+        this.state.parentFarm
       );
       alert("Saved!.");
       return this.closePopup();
@@ -105,7 +99,7 @@ class Popup extends React.Component {
     let optionlist = [];
     this.props.farms.map((f) =>
       optionlist.push(
-        <option id="parentFarm" value={f.name} onClick={this.update}>
+        <option value={f._id} onClick={this.update}>
           {f.name}
         </option>
       )
@@ -130,36 +124,34 @@ class Popup extends React.Component {
                 <ToggleButton
                   id="Farm"
                   value="Farm"
+                  name="Farm"
                   aria-label="italic"
                   style={{
                     display: "inline",
-                    height: "12vh",
+                    height: "8vh",
                     justifySelf: "center",
                   }}
                 >
-                  <FontAwesomeIcon id="Farm" value="Farm" icon={faCropAlt} />
+                  <CropLandscapeIcon id="Farm" name="Farm" value="Farm" />
                 </ToggleButton>
-                <br />
+                <span style={{ padding: "1px" }}> </span>
                 <ToggleButton
                   id="Pond"
                   value="Pond"
-                  style={{ height: "12vh", justifySelf: "center" }}
+                  name="Pond"
+                  style={{ height: "8vh", justifySelf: "center" }}
                   color="secondary"
                   aria-label="italic"
                 >
-                  <FontAwesomeIcon
-                    id="Farm"
-                    value="Farm"
-                    icon={faObjectGroup}
-                  />
+                  <PictureInPictureIcon id="Pond" name="Pond" value="Pond" />
                 </ToggleButton>
               </ToggleButtonGroup>
               <Typography
                 variant="caption"
-                align="right"
-                style={{ display: "block" }}
+                align="left"
+                style={{ display: "block", marginLeft: "16%" }}
               >
-                Farm - Ponds
+                {"Farm    ----    Ponds"}
               </Typography>
               {this.state.indicator === "" ||
               this.state.indicator === "Farm" ? (

@@ -19,7 +19,7 @@ class Boxmodels extends Component {
 
   render() {
     let farmsmap = [];
-      this.state.farms.map((frm) =>
+      this.props.data.map((frm, i) =>
         farmsmap.push(
           <Grid
             container
@@ -27,8 +27,9 @@ class Boxmodels extends Component {
             justify="center"
             alignItems="center"
             spacing={0}
-          >
-            <Pondspopulation ponds={frm.ponds} parentfrm={frm.name} />
+            key={i}
+          >{frm.name}
+            <Pondspopulation key={i} ponds={frm.ponds} parentFarm={frm.name} />
           </Grid>
         )
       );

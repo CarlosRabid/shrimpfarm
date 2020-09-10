@@ -19,19 +19,17 @@ class Pondspopulation extends Component {
 
   render() {
     let pondsinfo = [];
-    //   pondsinfo = this.state.data.ponds
     this.state.ponds.map((pnd) => {
-      this.props.parentfrm === pnd.parentfrm
+      this.props.parentFarm === pnd.parentFarm
         ? pondsinfo.push(
-            <div>
+            <div className="farm1">
               <Grid item xs={6}>
-                <Paper style={{ spacing: 4 }}>{pnd.name}</Paper>
+        <Paper style={{ spacing: 4 }}>{pnd.name}</Paper>
               </Grid>
             </div>
           )
         : pondsinfo.push(<div></div>)
         });
-    console.log(this.state);
 
     return pondsinfo;
   }
