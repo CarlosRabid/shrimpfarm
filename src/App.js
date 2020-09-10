@@ -128,14 +128,12 @@ class App extends Component {
   // create farm
   pushData = async (_id, name, ponds, indicator, size, parentFarm) => {
     let newFarm = {};
-    let newPond = [];
-    let ponddetail = { name, size, parentFarm };
-    newPond.push(ponddetail);
-    newFarm = {_id, name: parentFarm, ponds:newPond};
-    console.log(newFarm);
+    let newPond = ponds || [];
+    newPond.push({name, size, parentFarm});
+    newFarm = { _id, name: parentFarm, ponds: newPond };
     indicator === "Pond"
       ? await axios.put("http://localhost:4328/updtFarm", {
-          data: {_id, name, size, parentFarm, ponds, newFarm },
+          data: { _id, name, size, parentFarm, newPond, newFarm },
         })
       : await axios.post("http://localhost:4328/postFarm", {
           data: { name, ponds },
