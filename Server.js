@@ -62,13 +62,20 @@ app.get("/api/:tSize", function (req, res) {
 });
 
 app.get("/farms", async function (req, res) {
-  await farmincollection.find({}, function (err, result) {
-    res.send(result);
-  });
+  await farmincollection.find({}, async function (err, result) {
+      res.send(result);
+    })
+});
+
+app.get("/sum", async function (req, res) {
+  let sum = 0
+    await farmincollection.aggregate([{$unwind: '$ponds'}, { $group: {_id: "$name", "total": {$sum: "$ponds.size"}}}],function(error, s){
+      console.log(s)
+      res.send(s);
+    })
 });
 
 app.post("/postFarm", async function (req, res) {
-  console.log(req.body);
   let data = req.body.data;
   let farm = new farmincollection({
     name: data.name,
@@ -83,8 +90,6 @@ app.put("/updtFarm", async (req, res) => {
   let farm = req.body.data;
   let nfarm = req.body.data.newFarm;
   let _id = nfarm._id
-  console.log(nfarm._id);
-  
   await farmincollection.findByIdAndUpdate(
     _id,
      nfarm,
@@ -97,38 +102,38 @@ app.put("/updtFarm", async (req, res) => {
 });
 
 // For Modifying pond
-app.put("/updtPond", async (req, res) => {
-  let farm = req.body.data;
-  let pond = req.body.data;
-  await farmincollection.findByIdAndUpdate(
-    farm.id,
-    {
-      ponds: farm.ponds,
-    },
-    { new: true },
-    (err, result) => {
-      if (err) throw err;
-      else res.send(result);
-    }
-  );
-});
+// app.put("/updtPond", async (req, res) => {
+//   let farm = req.body.data;
+//   let pond = req.body.data;
+//   await farmincollection.findByIdAndUpdate(
+//     farm.id,
+//     {
+//       ponds: farm.ponds,
+//     },
+//     { new: true },
+//     (err, result) => {
+//       if (err) throw err;
+//       else res.send(result);
+//     }
+//   );
+// });
 
 // For Deleteing pond
-app.put("/updtPond", async (req, res) => {
-  let farm = req.body.data;
-  let pond = req.body.data.name;
-  await farmincollection.findByIdAndUpdate(
-    farm.id,
-    {
-      [ponds[pond]]: farm.ponds,
-    },
-    { new: true },
-    (err, result) => {
-      if (err) throw err;
-      else res.send("Pond Deleted");
-    }
-  );
-});
+// app.put("/updtPond", async (req, res) => {
+//   let farm = req.body.data;
+//   let pond = req.body.data.name;
+//   await farmincollection.findByIdAndUpdate(
+//     farm.id,
+//     {
+//       [ponds[pond]]: farm.ponds,
+//     },
+//     { new: true },
+//     (err, result) => {
+//       if (err) throw err;
+//       else res.send("Pond Deleted");
+//     }
+//   );
+// });
 
 app.delete("/delfarm/:farmid", function (req, res) {
   let name = req.params.name;
@@ -141,7 +146,6 @@ app.delete("/delfarm/:farmid", function (req, res) {
 });
 
 app.delete("/empty/", async function (req, res) {
-  let _id = req.params.farmid;
   await farmincollection.remove({}, function (err, response) {
     res.send(response);
   });

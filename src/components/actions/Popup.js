@@ -1,19 +1,8 @@
 import React from "react";
-import TextField from "@material-ui/core/TextField";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import ToggleButton from "@material-ui/lab/ToggleButton";
-import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
+import {TextField, InputLabel, Dialog, DialogActions, DialogContent, FormControl, Select, Typography, Tooltip, Button} from "@material-ui/core";
+import {ToggleButton, ToggleButtonGroup} from "@material-ui/lab";
 import CropLandscapeIcon from "@material-ui/icons/CropLandscape";
 import PictureInPictureIcon from "@material-ui/icons/PictureInPicture";
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  Typography,
-  Tooltip,
-} from "@material-ui/core";
 
 class Popup extends React.Component {
   constructor(props) {
@@ -29,8 +18,8 @@ class Popup extends React.Component {
       ponds: [],
     };
   }
-  closePopup = () => {
-    this.props.closePopup();
+  closePopup = async () => {
+    await this.props.closePopup();
   };
 
   update = async (event) => {
@@ -38,6 +27,7 @@ class Popup extends React.Component {
     // let parentFarm = event.target.name;
     let value = event.target.value;
     let _id = event.target.id;
+    console.log(event.target)
     if (value === "undefined") {
       return;
     } else {
@@ -60,7 +50,6 @@ class Popup extends React.Component {
   };
 
   indicatorSelector = async (event) => {
-    console.log(event.target.id);
     let indicator = event.target.id;
     if ((await event.target.id) === "Farm") {
       indicator = "Farm";
@@ -180,7 +169,7 @@ class Popup extends React.Component {
                     <br />
                     <Tooltip title="hectares" placement="top-end">
                       <TextField
-                        id="sizepond"
+                        id="size"
                         label="Size Pond"
                         name="size"
                         value={this.state.size}

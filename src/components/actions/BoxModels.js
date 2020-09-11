@@ -7,6 +7,7 @@ class Boxmodels extends Component {
     super(props);
     this.state = {
       farms: this.props.data,
+      size: this.props.size
     };
   }
 
@@ -19,7 +20,10 @@ class Boxmodels extends Component {
 
   render() {
     let farmsmap = [];
+    let sizes = [...this.props.size]
+    let objsize = sizes.reduce((obj, current, idx) => { return { ...obj, [current._id]: current.total };}, {})
       this.props.data.map((frm, i) =>
+      // let tSize = (frm.name === objsize)
         farmsmap.push(
           <Grid
             container
@@ -28,7 +32,7 @@ class Boxmodels extends Component {
             alignItems="center"
             spacing={0}
             key={i}
-          >{frm.name}
+          >Name: {frm.name} & Size: {objsize[frm.name]}
             <Pondspopulation key={i} ponds={frm.ponds} parentFarm={frm.name} />
           </Grid>
         )
