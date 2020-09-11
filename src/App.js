@@ -1,76 +1,51 @@
 import React, { Component } from "react";
 import Fab from "@material-ui/core/Fab";
 import { Button } from "@material-ui/core";
-import {
-  BrowserRouter as Router,
-  Route,
-  Link,
-  BrowserRouter,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Link, BrowserRouter} from "react-router-dom";
 import "./App.css";
 import Popup from "./components/actions/Popup";
-import axios from "axios";
 import Editable from "./components/actions/Editable";
+import Boxmodels from "./components/actions/BoxModels";
+import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import Boxmodels from "./components/actions/BoxModels";
 
 const style = {
   margin: "auto",
-  // top: '71vh',
-  // right: '30vw',
-  // bottom: 20,
-  // left: 'auto',
   marginLeft: "45%",
 };
 
 class App extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       // Dummy data for testing first
-      totSize: 13,
-      dbdata: [],
-      data: [
-        {
-          name: "abc",
-          size: 2,
-          ponds: [
-            { name: "VX", size: 0.2, parentFarm: "abc" },
-            { name: "ZZ", size: 0.4, parentFarm: "abc" },
-          ],
-        },
-        {
-          name: "xyz",
-          size: 2,
-          ponds: [
-            { name: "GH", size: 0.1, parentFarm: "xyz" },
-            { name: "YU", size: 0.2, parentFarm: "xyz" },
-          ],
-        },
-        {
-          name: "stu",
-          size: 1,
-          ponds: [
-            { name: "KL", size: 0.1, parentFarm: "stu" },
-            { name: "MN", size: 0.3, parentFarm: "stu" },
-          ],
-        },
-      ],
+      data: [],
       showPopup: false,
       editmode: false,
+      size: ""
     };
   }
   async componentDidMount() {
     await this.getDatafromDB();
+    await this.getSumfromDB();
   }
-
+  
   async getDatafromDB() {
     let data = await axios.get("http://localhost:4328/farms");
     return this.setState({
-      dbdata: data.data,
+      data: data.data,
       showPopup: false,
       editmode: false,
+    });
+  }
+
+  async getSumfromDB() {
+    let data = await axios.get("http://localhost:4328/sum");
+    let size = data.data
+    console.log(size)
+    return this.setState({
+      size
     });
   }
 
@@ -88,11 +63,12 @@ class App extends Component {
     }
   }
 
-  async delDatafromDB(eventid) {
+delDatafromDB = async () => {
     if (window.confirm("Are you sure you want to delete All Farms ?")) {
-      let data = await axios.delete("http://localhost:4328/empty", {});
+      await axios.delete("http://localhost:4328/empty", {});
       alert("Deleted!.");
-      return this.setState({ data: [], showPopup: false });
+      this.getDatafromDB()
+      return ;
     } else {
       return;
     }
@@ -102,10 +78,12 @@ class App extends Component {
     this.setState({ showPopup: true });
   };
 
-  closePopup = () => {
-    return this.setState({
+  closePopup = async () => {
+    await this.setState({
       showPopup: null,
     });
+    await this.getSumfromDB()
+    return;
   };
 
   closeEdit = () => {
@@ -116,28 +94,30 @@ class App extends Component {
 
   selecPond = (event) => {
     let editmode = { ...this.state.editmode };
-    editmode = JSON.stringify(event);
+    editmode = JSON.stringify(this.state.data);
     this.setState({ editmode });
     return;
   };
 
-  getNow = () => {
-    return new Date();
-  };
-
   // create farm
-  pushData = async (_id, name, ponds, indicator, size, parentFarm) => {
+  pushData = async (_id, name, ponds, indicator, size, parentFarm, action) => {
     let newFarm = {};
     let newPond = ponds || [];
     newPond.push({name, size, parentFarm});
     newFarm = { _id, name: parentFarm, ponds: newPond };
+    if (action == "update") {
+      
+      await axios.put("http://localhost:4328/updtFarm", {
+          data: { _id, name, size, parentFarm, newPond, newFarm },
+        })
+    } else (
     indicator === "Pond"
       ? await axios.put("http://localhost:4328/updtFarm", {
           data: { _id, name, size, parentFarm, newPond, newFarm },
         })
       : await axios.post("http://localhost:4328/postFarm", {
           data: { name, ponds },
-        });
+        }));
     return this.getDatafromDB();
   };
 
@@ -146,7 +126,6 @@ class App extends Component {
     await axios.put("http://localhost:4328/updtFarm", {
       data: { name, ponds },
     });
-    console.log(ponds);
     return this.getDatafromDB();
   };
 
@@ -174,6 +153,18 @@ class App extends Component {
                 </Button>
                 <Button
                   variant="contained"
+                  onClick={this.selecPond}
+                  style={{ marginLeft: "4%" }}
+                  size="medium"
+                  position="end"
+                  color="primary"
+                  name="editmode"
+                  id="editmode"
+                >
+                  Edit Farm or Ponds
+                </Button>
+                {/* <Button
+                  variant="contained"
                   onClick={this.delDatafromDB}
                   style={{ marginLeft: "4%" }}
                   size="small"
@@ -183,15 +174,15 @@ class App extends Component {
                   id="empty"
                 >
                   Edit Farm
-                </Button>
+                </Button> */}
                 <br />
                 <br />
                 {this.state.editmode ? (
                   <Editable
                     deleteItemfromDB={this.deleteItemfromDB}
-                    selectEvent={this.state.editmode}
+                    data={this.state.editmode}
                     closeEdit={this.closeEdit}
-                    updateEvent={this.updateEvent}
+                    updateData={this.pushData}
                   />
                 ) : (
                   <></>
@@ -201,12 +192,12 @@ class App extends Component {
                   <Popup
                     closePopup={this.closePopup}
                     pushData={this.pushData}
-                    farms={this.state.dbdata}
+                    farms={this.state.data}
                   />
                 ) : (
                   <Boxmodels
-                    data={this.state.dbdata}
-                    totsize={this.state.size}
+                    data={this.state.data}
+                    size={this.state.size}
                   />
                 )}
                 <Fab
