@@ -65,17 +65,17 @@ and CRUD operations .
 
 This runs the app in development mode.
 
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Open [http://localhost:3000](http://localhost:3000) for ckecking the webApp in browser.
 
 
 
 Initially you will see empty: you can  
 start creating farms and ponds saved to mongodb with persistency. 
-![Initial](http://localhost:3000/somepicture.PNG "Initial Desktop")
+![initialdesk](https://raw.githubusercontent.com/CarlosRabid/shrimpfarm/master/public/initialdesk.png "Landing Screen")
 
 ## Running the tests: Add Farm
 
-![somepicture](http://localhost:3000/somepicture.PNG "Initial ")
+![createnew](https://raw.githubusercontent.com/CarlosRabid/shrimpfarm/master/public/createfarm.png "Create New")
 
 You can add a new farm. Click the Floating button with the plus icon.
 A prompt will appear where you can input corresponding info 
@@ -83,44 +83,59 @@ wether you would like to create a new Farm or Pond.
 When you create a pond you can select from a list to assign it to a Farm,
 and corresponding size in hectares, detail showed as a tooltip. 
 
-![somepicture](https://localhost:3000/somepicture.PNG "somepicture")
+![createponds](https://raw.githubusercontent.com/CarlosRabid/shrimpfarm/master/public/createponds.png "Create Ponds")
 
 Before saving a confirmation is needed.
 Save if ready, discard if not. 
 
-![somepicture](https://localhost:3000/somepicture.PNG "somepicture")
+![pondcreated](https://raw.githubusercontent.com/CarlosRabid/shrimpfarm/master/public/pondcreated.png "Pond and Farm Created")
 
 ## Update and delete ponds or Farms containing ponds.
 
-![crud](https://localhost:3000/somepicture.PNG "CRUD Ops")
+![updatefarm](https://raw.githubusercontent.com/CarlosRabid/shrimpfarm/master/public/updatefarm.png "Update Operations")
 
-Simply select either pond or farm.
+Simply select the EDIT FARM OR PONDS button.
 A prompt appears showing available info for 
-updating input fields, or deleting  either selected pond,
-or corresponding Farm for pond clicked.
-If you did any changes make
-sure to save them with the "Update" button.
+updating input fields, or deleting  either selected Farm,
+or Ponds inside Farm.
+If you want to save your changes make
+sure to click the "Update" button.
+
+![updatedpond](https://raw.githubusercontent.com/CarlosRabid/shrimpfarm/master/public/updatedpond.png "Update Pond")
+
+### Delete Item
+
+![deletecurrent](https://raw.githubusercontent.com/CarlosRabid/shrimpfarm/master/public/deletecurrent.png "Delete Current")
+
+Once you have selected the EDIT button for farm or pond, you can also delete in the same action.
+After selecting either Farm or Pond from the dropdown list, a button appears with label 
+"Delete Current" farm or pond depending what you selected previously.
 
 ### Delete everything
 
-![end](https://localhost:3000/somepicture.PNG "end1")
+![deleteall](https://raw.githubusercontent.com/CarlosRabid/shrimpfarm/master/public/delete%20all.png "Delete All")
 
 On top of the screen there's a red button with "EMPTY" label,
 this allows the removal of all farms. 
 
-![confirm](https://localhost:3000/somepicture.PNG "end")
+### Summatory of Ponds' sizes.
+
+![sumshow](https://raw.githubusercontent.com/CarlosRabid/shrimpfarm/master/public/sumshow.png "Show Sum")
+
+The summatory of sizes of all ponds within each Farm is shown in Landing Page, next to Size. 
+This aggregattion happens in the backend server.
+
 
 *webApp includes confirmation for creating, updating or deleting farms.*
 
 ### Known bugs
 
-
+Minor clickable events. Improving UI.
 
 ## Built With
 
 * [React](https://en.reactjs.org) - The web framework used,
 * [MongoDB](https://mongodb.com/) - State manager, backend handler,
-
 * [Material UI](https://material-ui.com/) - Library for UI and light components.
 
 ## Contributing
