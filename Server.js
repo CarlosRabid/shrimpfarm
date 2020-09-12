@@ -25,7 +25,7 @@ app.use(function (req, res, next) {
   next();
 });
 
-mongoose.connect("mongodb://localhost/farms", { useNewUrlParser: true });
+mongoose.connect("mongodb://localhost/farms", { useNewUrlParser: true, useUnifiedTopology: true });
 
 const Schema = mongoose.Schema;
 const farminSchema = new Schema({
@@ -70,7 +70,6 @@ app.get("/farms", async function (req, res) {
 app.get("/sum", async function (req, res) {
   let sum = 0
     await farmincollection.aggregate([{$unwind: '$ponds'}, { $group: {_id: "$name", "total": {$sum: "$ponds.size"}}}],function(error, s){
-      console.log(s)
       res.send(s);
     })
 });
@@ -87,9 +86,29 @@ app.post("/postFarm", async function (req, res) {
 
 // For Modifying farm
 app.put("/updtFarm", async (req, res) => {
-  let farm = req.body.data;
+  let farm = await req.body.data;
   let nfarm = req.body.data.newFarm;
+  let ponds = []
+  farm.ponds ? (ponds = farm.ponds) : farm.newFarm.ponds
   let _id = nfarm._id
+  console.log(farm)
+  let indicator = farm.indicator
+  indicator === "Pond" && farm.action === "newPond" ? nfarm.ponds.push({name: farm.name, size: farm.size, parentFarm: farm.parentFarm}) : null
+  ponds = ponds.map((p, idx)=> p[idx] = {name:p.name, size: p.size, parentFarm: farm.name} )
+  console.log(ponds)
+  // ponds.map((p, idx)=> p[idx] = {name:p.name, size: p.size, parentFarm: farm.name} )
+  indicator !== "Pond" && farm.action === "update" ? 
+  await farmincollection.findByIdAndUpdate(
+    _id,
+    //  [{$unwind: '$ponds'},{name: farm.name}],
+     {name: farm.name, ponds: ponds},
+    { new: true },
+    (err, result) => {
+      if (err) throw err;
+      else 
+      res.send(result);
+    }
+  ) :
   await farmincollection.findByIdAndUpdate(
     _id,
      nfarm,
@@ -100,40 +119,6 @@ app.put("/updtFarm", async (req, res) => {
     }
   );
 });
-
-// For Modifying pond
-// app.put("/updtPond", async (req, res) => {
-//   let farm = req.body.data;
-//   let pond = req.body.data;
-//   await farmincollection.findByIdAndUpdate(
-//     farm.id,
-//     {
-//       ponds: farm.ponds,
-//     },
-//     { new: true },
-//     (err, result) => {
-//       if (err) throw err;
-//       else res.send(result);
-//     }
-//   );
-// });
-
-// For Deleteing pond
-// app.put("/updtPond", async (req, res) => {
-//   let farm = req.body.data;
-//   let pond = req.body.data.name;
-//   await farmincollection.findByIdAndUpdate(
-//     farm.id,
-//     {
-//       [ponds[pond]]: farm.ponds,
-//     },
-//     { new: true },
-//     (err, result) => {
-//       if (err) throw err;
-//       else res.send("Pond Deleted");
-//     }
-//   );
-// });
 
 app.delete("/delfarm/:farmid", function (req, res) {
   let name = req.params.name;
@@ -146,7 +131,7 @@ app.delete("/delfarm/:farmid", function (req, res) {
 });
 
 app.delete("/empty/", async function (req, res) {
-  await farmincollection.remove({}, function (err, response) {
+  await farmincollection.deleteMany({}, function (err, response) {
     res.send(response);
   });
   return;

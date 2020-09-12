@@ -40,14 +40,19 @@ class Editable extends React.Component {
   };
 
   pushData = async (_id, name, ponds, indicator, size, parentFarm, action) => {
-    _id = parentFarm
-    action = this.state.action
-    parentFarm = this.state.undefined
-    let sfarms = [...this.state.farms]
-    let arrponds = []
-    console.log(_id+name+ponds+indicator+parentFarm)
-    sfarms.reduce((obj, idx)=> ((indicator ==="Pond" && parentFarm===idx.name)? arrponds.push(idx.ponds) : obj) , [])
-    ponds = arrponds[0]
+    let stat = {...this.state}
+    // let previousname = this.state.undefined
+    // _id = stat.parentFarm
+    // action = stat.action
+    // parentFarm = stat.undefined
+    // let sfarms = stat.farms
+    // name = stat.name
+    // size = stat.size
+    // indicator = stat.indicator
+    // let arrponds = []
+    // action === "update" && indicator !== "Pond" ? (parentFarm = stat.undefined) : sfarms.reduce((obj, idx)=> ((indicator ==="Pond" && parentFarm===idx.name) ? arrponds.push(idx.ponds) : obj) , [])
+    // ponds = arrponds[0]
+    console.log(_id)
     await this.props.pushData(_id, name, ponds, indicator, size, parentFarm, action);
     return;
   };
@@ -74,14 +79,20 @@ class Editable extends React.Component {
     }
   };
   updateAction = async (e) => {
+    // console.log(this.state.farms.map((f, idx)=> f.name===this.state.undefined ? f : ponds.push(f.ponds) ))
     if (window.confirm(`You will update your changes, please confirm: `)) {
+      // let ponds = []
+      // ponds = this.state.farms.map((f, idx)=> f.name===this.state.undefined ? f.ponds : ponds.push(f) )
+      // ponds = ponds[0].ponds
+      // ponds = ponds[0]
       await this.pushData(
-        this.state.name,
-        this.state.ponds,
-        this.state.size,
         this.state.parentFarm,
+        this.state.name,
+        this.state.farms.map((f, idx)=> f.name === this.state.undefined ? f.ponds : []),
         this.state.indicator,
-        this.state.undefined
+        this.state.size,
+        this.state.undefined,
+        this.state.action
       );
       alert("Saved!.");
       return this.closeEdit();
@@ -97,7 +108,7 @@ class Editable extends React.Component {
     // let size = this.state.;
     if ([type] === "undefined") {
       type = "_id";
-      return this.setState();
+      return;
     } else {
       await this.setState({
         [type]: value,
@@ -224,7 +235,7 @@ class Editable extends React.Component {
             <TextField
               id="name"
               name="name"
-              value={this.state.undefined}
+              value={this.state.name ? this.state.name : this.state.undefined}
               onChange={this.update}
               inputProps={{ maxLength: 30 }}
             />

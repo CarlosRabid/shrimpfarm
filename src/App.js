@@ -43,7 +43,6 @@ class App extends Component {
   async getSumfromDB() {
     let data = await axios.get("http://localhost:4328/sum");
     let size = data.data
-    console.log(size)
     return this.setState({
       size
     });
@@ -103,22 +102,28 @@ delDatafromDB = async () => {
   pushData = async (_id, name, ponds, indicator, size, parentFarm, action) => {
     let newFarm = {};
     let newPond = ponds || [];
-    newPond.push({name, size, parentFarm});
     newFarm = { _id, name: parentFarm, ponds: newPond };
-    if (action == "update") {
-      
+    
+    console.log(action)
+    console.log(indicator)
+    if ( action === "update" && indicator !== "Pond") {
+      // ponds.map((p, idx)=> p[idx] = {name: p.parentFarm, size, parentFarm} )
+      console.log(ponds[0])      
+      ponds = ponds[0]
       await axios.put("http://localhost:4328/updtFarm", {
-          data: { _id, name, size, parentFarm, newPond, newFarm },
-        })
+        data: { _id, name, size, parentFarm, ponds, newFarm, indicator, action },
+      })
     } else (
-    indicator === "Pond"
-      ? await axios.put("http://localhost:4328/updtFarm", {
-          data: { _id, name, size, parentFarm, newPond, newFarm },
-        })
+      // newPond.push({name, size, parentFarm})
+      indicator === "Pond" && action === "newPond" ?  
+      await axios.put("http://localhost:4328/updtFarm", {
+        data: { _id, name, size, parentFarm, newPond, newFarm, indicator: "Pond", action: "newPond" },
+      })
       : await axios.post("http://localhost:4328/postFarm", {
           data: { name, ponds },
         }));
-    return this.getDatafromDB();
+        this.getDatafromDB();
+        return this.getSumfromDB() 
   };
 
   updateFarm = async (id, name, ponds) => {
@@ -182,7 +187,7 @@ delDatafromDB = async () => {
                     deleteItemfromDB={this.deleteItemfromDB}
                     data={this.state.editmode}
                     closeEdit={this.closeEdit}
-                    updateData={this.pushData}
+                    pushData={this.pushData}
                   />
                 ) : (
                   <></>
