@@ -1,37 +1,49 @@
 import React from "react";
-import {TextField, Tooltip} from "@material-ui/core";
+import {FilledInput, TextField, Tooltip} from "@material-ui/core";
 
 class Size extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props)
     this.state = {
       ponds: this.props.data,
       open: false,
       indicator: "",
       parentFarm: "",
       name: "",
-      size: this.props.data[0].size,
+      // size: "",
+      // size: this.props.data[0].size || this.props.size,
+      size: (this.props.size || this.props.data[0].size),
     };
   }
 
-  update = async (event) => {
-      console.log(event)
-    await this.props.update(event)
+  // async componentDidUpdate() {
+  //     console.log(this.props.data[0].size)
+  //     let type = "size"
+  //     // this.props.handleInputSize(this.props.data[0].size)
+  // }
+
+  handleInputSize = async (event) => {
+    let value={...this.state.size}
+    // let type = event.target.name
+    value = event.target.value
+    await this.props.handleInputSize(value)
+    // return this.setState({size: value})
   };
 
   render() {
     let pondslist = [];
-    console.log(this.props.data)
+    console.log(this.props.size)
         pondslist.push(<Tooltip title="hectares" placement="top-end">
-        <TextField
+        <FilledInput
           id="size"
           label="New Size"
           name="size"
-          variant={"filled"}
-          value={this.props.data[0].size}
-          inputProps={this.state.size}
-          onChange={this.update}
+          variant="filled"
+          // defaultValue={this.props.data[0].size}
+          placeholder={this.props.data[0].size}
+          value={this.props.size}
+          // inputProps={this.props.data[0].size}
+          onChange={this.handleInputSize}
         //   inputProps={this.state.ponds[0].size} //, { maxLength: 5 }}
         />
       </Tooltip>)

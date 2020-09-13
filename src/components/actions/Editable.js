@@ -25,22 +25,23 @@ class Editable extends React.Component {
       indicator: "",
       parentFarm: "",
       name: "",
-      size: 0,
+      // size: this.state._id.ponds[0].size,
+      size: "",
       ponds: [],
-      action: "update"
+      action: "update",
     };
   }
   closeEdit = () => {
     this.props.closeEdit();
   };
-  handleInput = (event) => {
-    let color = { ...this.state.color };
-    color = event;
-    return this.setState(color);
+
+  handleInputSize = async (value) => {
+    console.log(value)
+    await this.setState({ size: value });
   };
 
   pushData = async (_id, name, ponds, indicator, size, parentFarm, action) => {
-    let stat = {...this.state}
+    let stat = { ...this.state };
     // let previousname = this.state.undefined
     // _id = stat.parentFarm
     // action = stat.action
@@ -52,22 +53,30 @@ class Editable extends React.Component {
     // let arrponds = []
     // action === "update" && indicator !== "Pond" ? (parentFarm = stat.undefined) : sfarms.reduce((obj, idx)=> ((indicator ==="Pond" && parentFarm===idx.name) ? arrponds.push(idx.ponds) : obj) , [])
     // ponds = arrponds[0]
-    console.log(_id)
-    await this.props.pushData(_id, name, ponds, indicator, size, parentFarm, action);
+    console.log(_id);
+    await this.props.pushData(
+      _id,
+      name,
+      ponds,
+      indicator,
+      size,
+      parentFarm,
+      action
+    );
     return;
   };
 
   deleteItemfromDB = async (event) => {
-    this.state.indicator === "Farm" ? 
-    await this.props.deleteItemfromDB(this.state.parentFarm)
-    :
-    console.log("deletepond") 
+    this.state.indicator === "Farm"
+      ? await this.props.deleteItemfromDB(this.state.parentFarm)
+      : console.log("deletepond");
     return;
     // return
   };
+
   indicatorSelector = async (event) => {
     let indicator = { ...this.state.indicator };
-    if (await event.target.id === "Farm") {
+    if ((await event.target.id) === "Farm") {
       indicator = "Farm";
       return this.setState({
         indicator: indicator,
@@ -88,7 +97,9 @@ class Editable extends React.Component {
       await this.pushData(
         this.state.parentFarm,
         this.state.name,
-        this.state.farms.map((f, idx)=> f.name === this.state.undefined ? f.ponds : []),
+        this.state.farms.map((f, idx) =>
+          f.name === this.state.undefined ? f.ponds : []
+        ),
         this.state.indicator,
         this.state.size,
         this.state.undefined,
@@ -105,7 +116,8 @@ class Editable extends React.Component {
     // let parentFarm = event.target.name;
     let value = event.target.value;
     let _id = event.target.value._id;
-    // let size = this.state.;
+    let size = event.target.value.ponds;
+    // console.log(event.target.value.ponds[0].size)
     if ([type] === "undefined") {
       type = "_id";
       return;
@@ -221,10 +233,14 @@ class Editable extends React.Component {
                     </Select>
                     <br />
                     {this.state._id.ponds ? (
-                      <Size data={this.state._id.ponds} update={this.update} size={this.state.size} />
-                     ) : (
+                      <Size
+                        data={this.state._id.ponds}
+                        handleInputSize={this.handleInputSize}
+                        size={this.state.size}
+                      />
+                    ) : (
                       <></>
-                    )} 
+                    )}
                   </FormControl>
                   <br />
                 </>
@@ -246,12 +262,14 @@ class Editable extends React.Component {
             <button name="create" onClick={this.updateAction}>
               Update
             </button>
-            <br/>
-            {this.state.parentFarm ? (
+            <br />
+            {this.state.parentFarm || this.state.undefined ? (
               <button name="deleteone" onClick={this.deleteItemfromDB}>
-              Delete current {this.state.indicator}
-            </button>
-                  ) : <></>}
+                Delete current {this.state.indicator}
+              </button>
+            ) : (
+              <></>
+            )}
             <button onClick={this.closeEdit}>Cancel</button>
           </DialogActions>
         </Dialog>
