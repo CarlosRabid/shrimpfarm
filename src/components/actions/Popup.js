@@ -1,5 +1,5 @@
 import React from "react";
-import {TextField, InputLabel, Dialog, DialogActions, DialogContent, FormControl, Select, Typography, Tooltip, Button} from "@material-ui/core";
+import {TextField, InputLabel, Dialog, DialogActions, DialogContent, FormControl, Select, Typography, Tooltip} from "@material-ui/core";
 import {ToggleButton, ToggleButtonGroup} from "@material-ui/lab";
 import CropLandscapeIcon from "@material-ui/icons/CropLandscape";
 import PictureInPictureIcon from "@material-ui/icons/PictureInPicture";
@@ -16,6 +16,7 @@ class Popup extends React.Component {
       name: "",
       size: 0,
       ponds: [],
+      action: "newPond"
     };
   }
   closePopup = async () => {
@@ -24,10 +25,8 @@ class Popup extends React.Component {
 
   update = async (event) => {
     let type = event.target.name;
-    // let parentFarm = event.target.name;
     let value = event.target.value;
-    let _id = event.target.id;
-    console.log(event.target)
+    // let _id = event.target.id;
     if (value === "undefined") {
       return;
     } else {
@@ -37,7 +36,7 @@ class Popup extends React.Component {
     }
   };
 
-  pushData = async (_id, name, ponds, indicator, size, parentFarm) => {
+  pushData = async (_id, name, ponds, indicator, size, parentFarm, action) => {
     _id = parentFarm
     parentFarm = this.state.undefined
     let sfarms = [...this.state.farms]
@@ -45,7 +44,7 @@ class Popup extends React.Component {
     sfarms.reduce((obj, idx)=> ((indicator ==="Pond" && parentFarm===idx.name)? arrponds.push(idx.ponds) : obj) , [])
     // let nPonds = ponds.reduce((obj, item) => ( obj[item.key] = item.value, obj), {});
     ponds = arrponds[0]
-    await this.props.pushData(_id, name, ponds, indicator, size, parentFarm);
+    await this.props.pushData(_id, name, ponds, indicator, size, parentFarm, action);
     return;
   };
 
@@ -75,7 +74,8 @@ class Popup extends React.Component {
         this.state.ponds,
         this.state.indicator,
         this.state.size,
-        this.state.parentFarm
+        this.state.parentFarm,
+        this.state.action
       );
       alert("Saved!.");
       return this.closePopup();

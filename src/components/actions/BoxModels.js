@@ -23,7 +23,6 @@ class Boxmodels extends Component {
     let sizes = [...this.props.size]
     let objsize = sizes.reduce((obj, current, idx) => { return { ...obj, [current._id]: current.total };}, {})
       this.props.data.map((frm, i) =>
-      // let tSize = (frm.name === objsize)
         farmsmap.push(
           <Grid
             container
@@ -40,8 +39,6 @@ class Boxmodels extends Component {
     return (
       <div className="farm" style={{ padding: 5, flexGrow: 1 }}>
           {farmsmap}
-        {/* <Grid item xs={6} sm={3}>
-        </Grid> */}
       </div>
     );
   }

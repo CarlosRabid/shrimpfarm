@@ -7,7 +7,6 @@ import {
   FormControl,
   Select,
   Typography,
-  Button,
 } from "@material-ui/core";
 import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 import CropLandscapeIcon from "@material-ui/icons/CropLandscape";
@@ -25,44 +24,45 @@ class Editable extends React.Component {
       indicator: "",
       parentFarm: "",
       name: "",
-      size: 0,
+      // size: this.state._id.ponds[0].size,
+      size: "",
       ponds: [],
-      action: "update"
+      action: "update",
     };
   }
   closeEdit = () => {
     this.props.closeEdit();
   };
-  handleInput = (event) => {
-    let color = { ...this.state.color };
-    color = event;
-    return this.setState(color);
+
+  handleInputSize = async (value) => {
+    await this.setState({ size: value })
+    return;
   };
 
   pushData = async (_id, name, ponds, indicator, size, parentFarm, action) => {
-    _id = parentFarm
-    action = this.state.action
-    parentFarm = this.state.undefined
-    let sfarms = [...this.state.farms]
-    let arrponds = []
-    console.log(_id+name+ponds+indicator+parentFarm)
-    sfarms.reduce((obj, idx)=> ((indicator ==="Pond" && parentFarm===idx.name)? arrponds.push(idx.ponds) : obj) , [])
-    ponds = arrponds[0]
-    await this.props.pushData(_id, name, ponds, indicator, size, parentFarm, action);
+    await this.props.pushData(
+      _id,
+      name,
+      ponds,
+      indicator,
+      size,
+      parentFarm,
+      action
+    );
     return;
   };
 
   deleteItemfromDB = async (event) => {
-    this.state.indicator === "Farm" ? 
-    await this.props.deleteItemfromDB(this.state.parentFarm)
-    :
-    console.log("deletepond") 
+    this.state.indicator === "Farm"
+      ? await this.props.deleteItemfromDB(this.state.parentFarm)
+      : console.log("deletedpond");
     return;
     // return
   };
+
   indicatorSelector = async (event) => {
     let indicator = { ...this.state.indicator };
-    if (await event.target.id === "Farm") {
+    if ((await event.target.id) === "Farm") {
       indicator = "Farm";
       return this.setState({
         indicator: indicator,
@@ -75,13 +75,16 @@ class Editable extends React.Component {
   };
   updateAction = async (e) => {
     if (window.confirm(`You will update your changes, please confirm: `)) {
-      await this.pushData(
-        this.state.name,
-        this.state.ponds,
-        this.state.size,
+        await this.pushData(
         this.state.parentFarm,
+        this.state.name,
+        this.state.farms.map((f, idx) =>
+          f.name === this.state.undefined ? f.ponds : []
+        ),
         this.state.indicator,
-        this.state.undefined
+        this.state._id.ponds === "" ? this.state._id.ponds[0].size : this.state.size,
+        this.state.undefined,
+        this.state.action
       );
       alert("Saved!.");
       return this.closeEdit();
@@ -91,13 +94,12 @@ class Editable extends React.Component {
   };
   update = async (event) => {
     let type = event.target.name;
-    // let parentFarm = event.target.name;
     let value = event.target.value;
-    let _id = event.target.value._id;
-    // let size = this.state.;
+    // let _id = event.target.value._id;
+    // let size = event.target.value.ponds;
     if ([type] === "undefined") {
       type = "_id";
-      return this.setState();
+      return;
     } else {
       await this.setState({
         [type]: value,
@@ -116,7 +118,7 @@ class Editable extends React.Component {
       )
     );
     this.state.farms.map((f, idx) => {
-      f.ponds.map((p) =>
+      return f.ponds.map((p) =>
         f.name === p.parentFarm
           ? pondslist.push(
               <option value={f} size={p.size} onClick={this.update}>
@@ -210,10 +212,14 @@ class Editable extends React.Component {
                     </Select>
                     <br />
                     {this.state._id.ponds ? (
-                      <Size data={this.state._id.ponds} update={this.update} size={this.state.size} />
-                     ) : (
+                      <Size
+                        data={this.state._id.ponds}
+                        handleInputSize={this.handleInputSize}
+                        size={this.state.size}
+                      />
+                    ) : (
                       <></>
-                    )} 
+                    )}
                   </FormControl>
                   <br />
                 </>
@@ -224,7 +230,7 @@ class Editable extends React.Component {
             <TextField
               id="name"
               name="name"
-              value={this.state.undefined}
+              value={this.state.name ? this.state.name : this.state.undefined}
               onChange={this.update}
               inputProps={{ maxLength: 30 }}
             />
@@ -235,12 +241,14 @@ class Editable extends React.Component {
             <button name="create" onClick={this.updateAction}>
               Update
             </button>
-            <br/>
-            {this.state.parentFarm ? (
+            <br />
+            {this.state.parentFarm || this.state.undefined ? (
               <button name="deleteone" onClick={this.deleteItemfromDB}>
-              Delete current {this.state.indicator}
-            </button>
-                  ) : <></>}
+                Delete current {this.state.indicator}
+              </button>
+            ) : (
+              <></>
+            )}
             <button onClick={this.closeEdit}>Cancel</button>
           </DialogActions>
         </Dialog>

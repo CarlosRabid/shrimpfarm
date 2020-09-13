@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Fab from "@material-ui/core/Fab";
 import { Button } from "@material-ui/core";
-import { BrowserRouter as Router, Route, Link, BrowserRouter} from "react-router-dom";
+import { BrowserRouter, Route} from "react-router-dom";
 import "./App.css";
 import Popup from "./components/actions/Popup";
 import Editable from "./components/actions/Editable";
@@ -19,7 +19,6 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // Dummy data for testing first
       data: [],
       showPopup: false,
       editmode: false,
@@ -43,7 +42,6 @@ class App extends Component {
   async getSumfromDB() {
     let data = await axios.get("http://localhost:4328/sum");
     let size = data.data
-    console.log(size)
     return this.setState({
       size
     });
@@ -55,7 +53,7 @@ class App extends Component {
         "Delete this Farm ? This will delete all ponds within same farm."
       )
     ) {
-      let data = await axios.delete(`http://localhost:4328/delFarm/${_id}`);
+      await axios.delete(`http://localhost:4328/delFarm/${_id}`);
       alert("Farm Deleted!");
       return this.closeEdit();
     } else {
@@ -103,28 +101,29 @@ delDatafromDB = async () => {
   pushData = async (_id, name, ponds, indicator, size, parentFarm, action) => {
     let newFarm = {};
     let newPond = ponds || [];
-    newPond.push({name, size, parentFarm});
     newFarm = { _id, name: parentFarm, ponds: newPond };
-    if (action == "update") {
-      
+    
+    if ( action === "update" && indicator !== "Pond") {
+      ponds = ponds[0]
       await axios.put("http://localhost:4328/updtFarm", {
-          data: { _id, name, size, parentFarm, newPond, newFarm },
-        })
+        data: { _id, name, size, parentFarm, ponds, newFarm, indicator, action },
+      })
     } else (
-    indicator === "Pond"
-      ? await axios.put("http://localhost:4328/updtFarm", {
-          data: { _id, name, size, parentFarm, newPond, newFarm },
-        })
+      indicator === "Pond" && action === "newPond" ?  
+      await axios.put("http://localhost:4328/updtFarm", {
+        data: { _id, name, size, parentFarm, newPond, newFarm, indicator: "Pond", action: "newPond" },
+      })
       : await axios.post("http://localhost:4328/postFarm", {
           data: { name, ponds },
         }));
-    return this.getDatafromDB();
+        this.getDatafromDB();
+        return this.getSumfromDB() 
   };
 
   updateFarm = async (id, name, ponds) => {
-    let data = {};
+    let data = {name, ponds};
     await axios.put("http://localhost:4328/updtFarm", {
-      data: { name, ponds },
+      data,
     });
     return this.getDatafromDB();
   };
@@ -182,7 +181,7 @@ delDatafromDB = async () => {
                     deleteItemfromDB={this.deleteItemfromDB}
                     data={this.state.editmode}
                     closeEdit={this.closeEdit}
-                    updateData={this.pushData}
+                    pushData={this.pushData}
                   />
                 ) : (
                   <></>
