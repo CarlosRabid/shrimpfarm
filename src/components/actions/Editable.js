@@ -7,7 +7,6 @@ import {
   FormControl,
   Select,
   Typography,
-  Button,
 } from "@material-ui/core";
 import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 import CropLandscapeIcon from "@material-ui/icons/CropLandscape";
@@ -36,24 +35,11 @@ class Editable extends React.Component {
   };
 
   handleInputSize = async (value) => {
-    console.log(value)
-    await this.setState({ size: value });
+    await this.setState({ size: value })
+    return;
   };
 
   pushData = async (_id, name, ponds, indicator, size, parentFarm, action) => {
-    let stat = { ...this.state };
-    // let previousname = this.state.undefined
-    // _id = stat.parentFarm
-    // action = stat.action
-    // parentFarm = stat.undefined
-    // let sfarms = stat.farms
-    // name = stat.name
-    // size = stat.size
-    // indicator = stat.indicator
-    // let arrponds = []
-    // action === "update" && indicator !== "Pond" ? (parentFarm = stat.undefined) : sfarms.reduce((obj, idx)=> ((indicator ==="Pond" && parentFarm===idx.name) ? arrponds.push(idx.ponds) : obj) , [])
-    // ponds = arrponds[0]
-    console.log(_id);
     await this.props.pushData(
       _id,
       name,
@@ -69,7 +55,7 @@ class Editable extends React.Component {
   deleteItemfromDB = async (event) => {
     this.state.indicator === "Farm"
       ? await this.props.deleteItemfromDB(this.state.parentFarm)
-      : console.log("deletepond");
+      : console.log("deletedpond");
     return;
     // return
   };
@@ -88,7 +74,6 @@ class Editable extends React.Component {
     }
   };
   updateAction = async (e) => {
-    // console.log(this.state.farms.map((f, idx)=> f.name===this.state.undefined ? f : ponds.push(f.ponds) ))
     if (window.confirm(`You will update your changes, please confirm: `)) {
         await this.pushData(
         this.state.parentFarm,
@@ -97,7 +82,7 @@ class Editable extends React.Component {
           f.name === this.state.undefined ? f.ponds : []
         ),
         this.state.indicator,
-        this.state.size === "" ? this.state._id.ponds[0].size : this.state.size,
+        this.state._id.ponds === "" ? this.state._id.ponds[0].size : this.state.size,
         this.state.undefined,
         this.state.action
       );
@@ -110,8 +95,8 @@ class Editable extends React.Component {
   update = async (event) => {
     let type = event.target.name;
     let value = event.target.value;
-    let _id = event.target.value._id;
-    let size = event.target.value.ponds;
+    // let _id = event.target.value._id;
+    // let size = event.target.value.ponds;
     if ([type] === "undefined") {
       type = "_id";
       return;
@@ -133,7 +118,7 @@ class Editable extends React.Component {
       )
     );
     this.state.farms.map((f, idx) => {
-      f.ponds.map((p) =>
+      return f.ponds.map((p) =>
         f.name === p.parentFarm
           ? pondslist.push(
               <option value={f} size={p.size} onClick={this.update}>

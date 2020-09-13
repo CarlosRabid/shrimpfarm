@@ -1,5 +1,5 @@
 import React from "react";
-import {FilledInput, TextField, Tooltip} from "@material-ui/core";
+import {FilledInput, Tooltip} from "@material-ui/core";
 
 class Size extends React.Component {
   constructor(props) {
@@ -16,12 +16,6 @@ class Size extends React.Component {
     };
   }
 
-  // async componentDidUpdate() {
-  //     console.log(this.props.data[0].size)
-  //     let type = "size"
-  //     // this.props.handleInputSize(this.props.data[0].size)
-  // }
-
   handleInputSize = async (event) => {
     let value={...this.state.size}
     // let type = event.target.name
@@ -32,7 +26,6 @@ class Size extends React.Component {
 
   render() {
     let pondslist = [];
-    console.log(this.props.size)
         pondslist.push(<Tooltip title="hectares" placement="top-end">
         <FilledInput
           id="size"

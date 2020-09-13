@@ -1,5 +1,5 @@
 import React from "react";
-import {TextField, InputLabel, Dialog, DialogActions, DialogContent, FormControl, Select, Typography, Tooltip, Button} from "@material-ui/core";
+import {TextField, InputLabel, Dialog, DialogActions, DialogContent, FormControl, Select, Typography, Tooltip} from "@material-ui/core";
 import {ToggleButton, ToggleButtonGroup} from "@material-ui/lab";
 import CropLandscapeIcon from "@material-ui/icons/CropLandscape";
 import PictureInPictureIcon from "@material-ui/icons/PictureInPicture";
@@ -25,10 +25,8 @@ class Popup extends React.Component {
 
   update = async (event) => {
     let type = event.target.name;
-    // let parentFarm = event.target.name;
     let value = event.target.value;
-    let _id = event.target.id;
-    console.log(event.target)
+    // let _id = event.target.id;
     if (value === "undefined") {
       return;
     } else {

@@ -91,11 +91,9 @@ app.put("/updtFarm", async (req, res) => {
   let ponds = []
   farm.ponds ? (ponds = farm.ponds) : farm.newFarm.ponds
   let _id = nfarm._id
-  console.log(farm)
   let indicator = farm.indicator
   indicator === "Pond" && farm.action === "newPond" ? nfarm.ponds.push({name: farm.name, size: farm.size, parentFarm: farm.parentFarm}) : null
   ponds = ponds.map((p, idx)=> p[idx] = {name:p.name, size: p.size, parentFarm: farm.name} )
-  console.log(ponds)
   // ponds.map((p, idx)=> p[idx] = {name:p.name, size: p.size, parentFarm: farm.name} )
   indicator !== "Pond" && farm.action === "update" ? 
   await farmincollection.findByIdAndUpdate(

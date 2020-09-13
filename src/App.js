@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Fab from "@material-ui/core/Fab";
 import { Button } from "@material-ui/core";
-import { BrowserRouter as Router, Route, Link, BrowserRouter} from "react-router-dom";
+import { BrowserRouter, Route} from "react-router-dom";
 import "./App.css";
 import Popup from "./components/actions/Popup";
 import Editable from "./components/actions/Editable";
@@ -19,7 +19,6 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // Dummy data for testing first
       data: [],
       showPopup: false,
       editmode: false,
@@ -54,7 +53,7 @@ class App extends Component {
         "Delete this Farm ? This will delete all ponds within same farm."
       )
     ) {
-      let data = await axios.delete(`http://localhost:4328/delFarm/${_id}`);
+      await axios.delete(`http://localhost:4328/delFarm/${_id}`);
       alert("Farm Deleted!");
       return this.closeEdit();
     } else {
@@ -104,17 +103,12 @@ delDatafromDB = async () => {
     let newPond = ponds || [];
     newFarm = { _id, name: parentFarm, ponds: newPond };
     
-    console.log(action)
-    console.log(indicator)
     if ( action === "update" && indicator !== "Pond") {
-      // ponds.map((p, idx)=> p[idx] = {name: p.parentFarm, size, parentFarm} )
-      console.log(ponds[0])      
       ponds = ponds[0]
       await axios.put("http://localhost:4328/updtFarm", {
         data: { _id, name, size, parentFarm, ponds, newFarm, indicator, action },
       })
     } else (
-      // newPond.push({name, size, parentFarm})
       indicator === "Pond" && action === "newPond" ?  
       await axios.put("http://localhost:4328/updtFarm", {
         data: { _id, name, size, parentFarm, newPond, newFarm, indicator: "Pond", action: "newPond" },
@@ -127,9 +121,9 @@ delDatafromDB = async () => {
   };
 
   updateFarm = async (id, name, ponds) => {
-    let data = {};
+    let data = {name, ponds};
     await axios.put("http://localhost:4328/updtFarm", {
-      data: { name, ponds },
+      data,
     });
     return this.getDatafromDB();
   };
