@@ -90,18 +90,14 @@ class Editable extends React.Component {
   updateAction = async (e) => {
     // console.log(this.state.farms.map((f, idx)=> f.name===this.state.undefined ? f : ponds.push(f.ponds) ))
     if (window.confirm(`You will update your changes, please confirm: `)) {
-      // let ponds = []
-      // ponds = this.state.farms.map((f, idx)=> f.name===this.state.undefined ? f.ponds : ponds.push(f) )
-      // ponds = ponds[0].ponds
-      // ponds = ponds[0]
-      await this.pushData(
+        await this.pushData(
         this.state.parentFarm,
         this.state.name,
         this.state.farms.map((f, idx) =>
           f.name === this.state.undefined ? f.ponds : []
         ),
         this.state.indicator,
-        this.state.size,
+        this.state.size === "" ? this.state._id.ponds[0].size : this.state.size,
         this.state.undefined,
         this.state.action
       );
@@ -113,11 +109,9 @@ class Editable extends React.Component {
   };
   update = async (event) => {
     let type = event.target.name;
-    // let parentFarm = event.target.name;
     let value = event.target.value;
     let _id = event.target.value._id;
     let size = event.target.value.ponds;
-    // console.log(event.target.value.ponds[0].size)
     if ([type] === "undefined") {
       type = "_id";
       return;
