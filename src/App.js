@@ -162,18 +162,6 @@ delDatafromDB = async () => {
                 >
                   Edit Farm or Ponds
                 </Button>
-                {/* <Button
-                  variant="contained"
-                  onClick={this.delDatafromDB}
-                  style={{ marginLeft: "4%" }}
-                  size="small"
-                  position="end"
-                  color="secondary"
-                  name="delete all"
-                  id="empty"
-                >
-                  Edit Farm
-                </Button> */}
                 <br />
                 <br />
                 {this.state.editmode ? (
