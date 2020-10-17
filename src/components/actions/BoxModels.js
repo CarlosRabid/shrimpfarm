@@ -19,24 +19,13 @@ class Boxmodels extends Component {
   };
 
   render() {
+    // console.log(this.props.data)
     let farmsmap = [];
     let sizes = [...this.props.size];
     let objsize = sizes.reduce((obj, current, idx) => {
       return { ...obj, [current._id]: current.total };
     }, {});
-    this.props.data === [] ? 
-      farmsmap.push(
-        <Grid
-          container
-          direction="row"
-          justify="center"
-          alignItems="center"
-          spacing={0}
-        >
-        "No data found"
-        </Grid>
-      )
-      : this.props.data.map((frm, i) =>
+    this.props.data.map((frm, i) =>
       farmsmap.push(
         <Grid
           container
@@ -47,11 +36,7 @@ class Boxmodels extends Component {
           key={i}
         >
           Name: {frm.name} & Size: {objsize[frm.name]}
-          <Pondspopulation
-            key={i}
-            ponds={frm.ponds}
-            parentFarm={frm.name}
-          />
+          <Pondspopulation key={i} ponds={frm.ponds} parentFarm={frm.name} />
         </Grid>
       )
     );

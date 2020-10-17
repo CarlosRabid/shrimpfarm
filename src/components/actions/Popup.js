@@ -1,6 +1,16 @@
 import React from "react";
-import {TextField, InputLabel, Dialog, DialogActions, DialogContent, FormControl, Select, Typography, Tooltip} from "@material-ui/core";
-import {ToggleButton, ToggleButtonGroup} from "@material-ui/lab";
+import {
+  TextField,
+  InputLabel,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  FormControl,
+  Select,
+  Typography,
+  Tooltip,
+} from "@material-ui/core";
+import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 import CropLandscapeIcon from "@material-ui/icons/CropLandscape";
 import PictureInPictureIcon from "@material-ui/icons/PictureInPicture";
 
@@ -16,7 +26,7 @@ class Popup extends React.Component {
       name: "",
       size: 0,
       ponds: [],
-      action: "newPond"
+      action: "newPond",
     };
   }
   closePopup = async () => {
@@ -37,14 +47,28 @@ class Popup extends React.Component {
   };
 
   pushData = async (_id, name, ponds, indicator, size, parentFarm, action) => {
-    _id = parentFarm
-    parentFarm = this.state.undefined
-    let sfarms = [...this.state.farms]
-    let arrponds = []
-    sfarms.reduce((obj, idx)=> ((indicator ==="Pond" && parentFarm===idx.name)? arrponds.push(idx.ponds) : obj) , [])
+    _id = parentFarm;
+    parentFarm = this.state.undefined;
+    let sfarms = [...this.state.farms];
+    let arrponds = [];
+    sfarms.reduce(
+      (obj, idx) =>
+        indicator === "Pond" && parentFarm === idx.name
+          ? arrponds.push(idx.ponds)
+          : obj,
+      []
+    );
     // let nPonds = ponds.reduce((obj, item) => ( obj[item.key] = item.value, obj), {});
-    ponds = arrponds[0]
-    await this.props.pushData(_id, name, ponds, indicator, size, parentFarm, action);
+    ponds = arrponds[0];
+    await this.props.pushData(
+      _id,
+      name,
+      ponds,
+      indicator,
+      size,
+      parentFarm,
+      action
+    );
     return;
   };
 
@@ -77,7 +101,6 @@ class Popup extends React.Component {
         this.state.parentFarm,
         this.state.action
       );
-      alert("Saved!.");
       return this.closePopup();
     } else {
       return;

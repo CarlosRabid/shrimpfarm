@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Fab from "@material-ui/core/Fab";
-import { Button } from "@material-ui/core";
-import { BrowserRouter, Route} from "react-router-dom";
+import { Button, Snackbar, Tooltip } from "@material-ui/core";
+import { BrowserRouter, Route } from "react-router-dom";
 import "./App.css";
 import Popup from "./components/actions/Popup";
 import Editable from "./components/actions/Editable";
@@ -22,28 +22,38 @@ class App extends Component {
       data: [],
       showPopup: false,
       editmode: false,
-      size: ""
+      size: "",
+      nodata: false,
+      snack: false,
     };
   }
   async componentDidMount() {
     await this.getDatafromDB();
     await this.getSumfromDB();
   }
-  
+
   async getDatafromDB() {
     let data = await axios.get("http://localhost:4328/farms");
+    let nodata = false;
+    if (data.data[0]) {
+      nodata = true;
+    } else {
+      nodata = false;
+    }
+
     return this.setState({
       data: data.data,
       showPopup: false,
       editmode: false,
+      nodata,
     });
   }
 
   async getSumfromDB() {
     let data = await axios.get("http://localhost:4328/sum");
-    let size = data.data
+    let size = data.data;
     return this.setState({
-      size
+      size,
     });
   }
 
@@ -61,26 +71,33 @@ class App extends Component {
     }
   }
 
-delDatafromDB = async () => {
+  delDatafromDB = async () => {
     if (window.confirm("Are you sure you want to delete All Farms ?")) {
       await axios.delete("http://localhost:4328/empty", {});
       alert("Deleted!.");
-      this.getDatafromDB()
-      return ;
+      this.getDatafromDB();
+      return;
     } else {
       return;
     }
-  }
+  };
 
   togglePopup = (event) => {
     this.setState({ showPopup: true });
   };
 
   closePopup = async () => {
+    let timeout = 5000;
     await this.setState({
       showPopup: null,
+      snack: true,
     });
-    await this.getSumfromDB()
+    await setTimeout(() => {
+      this.setState({
+        snack: false,
+      });
+    }, timeout);
+    await this.getSumfromDB();
     return;
   };
 
@@ -102,26 +119,54 @@ delDatafromDB = async () => {
     let newFarm = {};
     let newPond = ponds || [];
     newFarm = { _id, name: parentFarm, ponds: newPond };
-    
-    if ( action === "update" && indicator !== "Pond") {
-      ponds = ponds[0]
+
+    if (action === "update" && indicator !== "Pond") {
+      ponds = ponds[0];
       await axios.put("http://localhost:4328/updtFarm", {
-        data: { _id, name, size, parentFarm, ponds, newFarm, indicator, action },
-      })
-    } else (
-      indicator === "Pond" && action === "newPond" ?  
-      await axios.put("http://localhost:4328/updtFarm", {
-        data: { _id, name, size, parentFarm, newPond, newFarm, indicator: "Pond", action: "newPond" },
-      })
-      : await axios.post("http://localhost:4328/postFarm", {
-          data: { name, ponds },
-        }));
-        this.getDatafromDB();
-        return this.getSumfromDB() 
+        data: {
+          _id,
+          name,
+          size,
+          parentFarm,
+          ponds,
+          newFarm,
+          indicator,
+          action,
+        },
+      });
+    } else
+      indicator === "Pond" && action === "newPond"
+        ? await axios.put("http://localhost:4328/updtFarm", {
+            data: {
+              _id,
+              name,
+              size,
+              parentFarm,
+              newPond,
+              newFarm,
+              indicator: "Pond",
+              action: "newPond",
+            },
+          })
+        : await axios.post("http://localhost:4328/postFarm", {
+            data: { name, ponds },
+          });
+
+    this.getDatafromDB();
+    let timeout = 5000;
+    await this.setState({
+      snack: true
+    })
+    await setTimeout(() => {
+      this.setState({
+        snack: false,
+      });
+    }, timeout);
+    return this.getSumfromDB();
   };
 
   updateFarm = async (id, name, ponds) => {
-    let data = {name, ponds};
+    let data = { name, ponds };
     await axios.put("http://localhost:4328/updtFarm", {
       data,
     });
@@ -150,18 +195,20 @@ delDatafromDB = async () => {
                 >
                   Empty ALL
                 </Button>
-                <Button
-                  variant="contained"
-                  onClick={this.selecPond}
-                  style={{ marginLeft: "4%" }}
-                  size="medium"
-                  position="end"
-                  color="primary"
-                  name="editmode"
-                  id="editmode"
-                >
-                  Edit Farm or Ponds
-                </Button>
+                <Tooltip title="from the same place or delete individually">
+                  <Button
+                    variant="contained"
+                    onClick={this.selecPond}
+                    style={{ marginLeft: "4%" }}
+                    size="medium"
+                    position="end"
+                    color="primary"
+                    name="editmode"
+                    id="editmode"
+                  >
+                    Edit Farm or Ponds
+                  </Button>
+                </Tooltip>
                 <br />
                 <br />
                 {this.state.editmode ? (
@@ -174,36 +221,50 @@ delDatafromDB = async () => {
                 ) : (
                   <></>
                 )}
-
                 {this.state.showPopup ? (
                   <Popup
                     closePopup={this.closePopup}
                     pushData={this.pushData}
                     farms={this.state.data}
                   />
+                ) : this.state.nodata ? (
+                  <Boxmodels data={this.state.data} size={this.state.size} />
                 ) : (
-                  <Boxmodels
-                    data={this.state.data}
-                    size={this.state.size}
-                  />
+                  "No data found. Start by adding farms"
                 )}
-                <Fab
-                  variant="extended"
-                  onClick={this.togglePopup}
-                  name="showPopup"
-                  id="showPopup"
-                  color="default"
-                  aria-label="add"
-                  style={style}
-                  size="large"
-                >
-                  <FontAwesomeIcon
-                    icon={faPlus}
-                    size="2x"
-                    id="all"
-                    value="false"
-                  />
-                </Fab>
+                {this.state.snack ? (
+                  <Snackbar
+                    anchorOrigin={{
+                      vertical: "bottom",
+                      horizontal: "left",
+                    }}
+                    open={this.state.snack}
+                    autoHideDuration={6600}
+                    message="Saved!"
+                  ></Snackbar>
+                ) : (
+                  <></>
+                )}
+                ;
+                <Tooltip title="Add Farms/Ponds">
+                  <Fab
+                    variant="extended"
+                    onClick={this.togglePopup}
+                    name="showPopup"
+                    id="showPopup"
+                    color="default"
+                    aria-label="add"
+                    style={style}
+                    size="large"
+                  >
+                    <FontAwesomeIcon
+                      icon={faPlus}
+                      size="2x"
+                      id="all"
+                      value="false"
+                    />
+                  </Fab>
+                </Tooltip>
               </div>
             )}
           ></Route>

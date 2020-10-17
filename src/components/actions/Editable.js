@@ -86,7 +86,6 @@ class Editable extends React.Component {
         this.state.undefined,
         this.state.action
       );
-      alert("Saved!.");
       return this.closeEdit();
     } else {
       return;
