@@ -101,10 +101,19 @@ class App extends Component {
     return;
   };
 
-  closeEdit = () => {
-    return this.setState({
+  closeEdit = async () => {
+    this.setState({
       editmode: false,
     });
+    let timeout = 5000;
+    await this.setState({
+      snack: true,
+    });
+    await setTimeout(() => {
+      this.setState({
+        snack: false,
+      });
+    }, timeout);
   };
 
   selecPond = (event) => {

@@ -74,7 +74,6 @@ class Editable extends React.Component {
     }
   };
   updateAction = async (e) => {
-    if (window.confirm(`You will update your changes, please confirm: `)) {
         await this.pushData(
         this.state.parentFarm,
         this.state.name,
@@ -87,9 +86,6 @@ class Editable extends React.Component {
         this.state.action
       );
       return this.closeEdit();
-    } else {
-      return;
-    }
   };
   update = async (event) => {
     let type = event.target.name;
